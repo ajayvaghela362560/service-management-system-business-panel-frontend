@@ -1,6 +1,6 @@
 'use client';
 
-import { DataTableFilterBox } from '@/components/ui/table/data-table-filter-box';
+// import { DataTableFilterBox } from '@/components/ui/table/data-table-filter-box';
 import { DataTableResetFilter } from '@/components/ui/table/data-table-reset-filter';
 import { DataTableSearch } from '@/components/ui/table/data-table-search';
 import {
@@ -26,13 +26,13 @@ export default function ProductTableAction() {
         setSearchQuery={setSearchQuery}
         setPage={setPage}
       />
-      <DataTableFilterBox
+      {/* <DataTableFilterBox
         filterKey='categories'
         title='Categories'
         options={CATEGORY_OPTIONS}
         setFilterValue={setCategoriesFilter}
         filterValue={categoriesFilter}
-      />
+      /> */}
       <DataTableResetFilter
         isFilterActive={isAnyFilterActive}
         onReset={resetFilters}

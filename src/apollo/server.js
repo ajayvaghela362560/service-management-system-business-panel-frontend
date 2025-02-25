@@ -42,22 +42,77 @@ export const login = `
   }
 `;
 
-export const sendChatMessage = `mutation SendChatMessage($orderId: ID!, $messageInput: ChatMessageInput!) {
-  sendChatMessage(message: $messageInput, orderId: $orderId) {
-    success
-    message
-    data {
-      id
+export const AddService = `
+  mutation Services(
+    $id: String,
+    $name: String!,
+    $price: String!,
+    $duration: String!    
+  ) {
+    AddService(input: { 
+      id: $id,
+      name: $name,
+      price: $price,
+      duration: $duration
+    }) {
       message
-      user {
-        id
+      result {        
         name
+        price
+        duration 
       }
-      createdAt
     }
   }
-}
 `;
+
+export const EditService = `
+  mutation Services(
+    $id: String,
+    $name: String!,
+    $price: String!,
+    $duration: String!    
+  ) {
+    EditService(input: { 
+      id: $id,
+      name: $name,
+      price: $price,
+      duration: $duration
+    }) {
+      message
+      result {        
+        name
+        price
+        duration 
+      }
+    }
+  }
+`;
+
+export const getServiceById = `
+  query getServiceById($id: String!) {
+    getServiceById(id: $id){
+      id
+      name
+      price
+      duration
+    }
+  }
+`;
+
+export const getAllServices = `
+  query GET_ALL_SERVICES($page: Int, $limit: Int, $search: String) {
+    getAllServices(page: $page, limit: $limit, search: $search){
+      total_services
+      services {
+        id
+        name
+        price
+        duration
+      }    
+    }
+  }
+`;
+
 
 export const emailExist = `
   mutation EmailExist($email:String!){

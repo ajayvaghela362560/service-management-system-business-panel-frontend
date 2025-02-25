@@ -14,10 +14,10 @@ import {
 import { useSaveTokenStore } from '@/store/login';
 export function UserNav() {
   const session = { user: { name: "admin", email: "admin@gmail.com", image: "" } };
-  const clearToken = useSaveTokenStore((state) => state.logOut);
+  const logOut = useSaveTokenStore((state) => state.logOut);
 
   const signOut = () => {
-    clearToken();
+    logOut();
     // Redirect to login page
     window.location.href = '/business/sign-in';
   };
@@ -52,10 +52,6 @@ export function UserNav() {
             <DropdownMenuItem>
               Profile
               <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              Billing
-              <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
             </DropdownMenuItem>
             <DropdownMenuItem>
               Settings

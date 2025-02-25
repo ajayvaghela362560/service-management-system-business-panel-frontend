@@ -61,7 +61,7 @@ export default function BusinessSignUpViewPage() {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [businessRegister] = useMutation(REGISTER, { onCompleted, onError });
-    const form = useForm({ resolver: zodResolver(formSchema) });
+    const form = useForm({ resolver: zodResolver(formSchema), defaultValues: { firstName: "", lastName: "", email: "", password: "" } });
     const SaveToken = useSaveTokenStore((state) => state.setToken);
 
     function onCompleted({ registerUser }) {

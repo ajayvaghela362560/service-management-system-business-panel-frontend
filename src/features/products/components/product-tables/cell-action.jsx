@@ -17,13 +17,15 @@ export const CellAction = ({ data }) => {
   const [open, setOpen] = useState(false);
   const router = useRouter();
 
-  const onConfirm = async () => {};
+  console.log("###_delete_data_### ", data);
+
+  const onConfirm = async () => { };
 
   return (
     <>
       <AlertModal
         isOpen={open}
-        onClose={() => setOpen(false)}
+        onClose={() => setOpen(loading === false ? false : true)}
         onConfirm={onConfirm}
         loading={loading}
       />
@@ -36,15 +38,14 @@ export const CellAction = ({ data }) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align='end'>
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
-
           <DropdownMenuItem
-            onClick={() => router.push(`/dashboard/product/${data.id}`)}
+            onClick={() => router.push(`/business/dashboard/services/${data.id}`)}
           >
             <Edit className='mr-2 h-4 w-4' /> Update
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setOpen(true)}>
+          {/* <DropdownMenuItem onClick={() => setOpen(true)}>
             <Trash className='mr-2 h-4 w-4' /> Delete
-          </DropdownMenuItem>
+          </DropdownMenuItem> */}
         </DropdownMenuContent>
       </DropdownMenu>
     </>

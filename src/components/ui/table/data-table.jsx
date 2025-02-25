@@ -31,19 +31,12 @@ import {
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
 import { parseAsInteger, useQueryState } from 'nuqs';
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
-  totalItems: number;
-  pageSizeOptions?: number[];
-}
-
-export function DataTable<TData, TValue>({
+export function DataTable({
   columns,
   data,
   totalItems,
   pageSizeOptions = [10, 20, 30, 40, 50]
-}: DataTableProps<TData, TValue>) {
+}) {
   const [currentPage, setCurrentPage] = useQueryState(
     'page',
     parseAsInteger.withOptions({ shallow: false }).withDefault(1)
@@ -62,11 +55,7 @@ export function DataTable<TData, TValue>({
 
   const pageCount = Math.ceil(totalItems / pageSize);
 
-  const handlePaginationChange = (
-    updaterOrValue:
-      | PaginationState
-      | ((old: PaginationState) => PaginationState)
-  ) => {
+  const handlePaginationChange = (updaterOrValue) => {
     const pagination =
       typeof updaterOrValue === 'function'
         ? updaterOrValue(paginationState)

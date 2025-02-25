@@ -1,13 +1,14 @@
 import { create } from "zustand";
+import Cookies from "js-cookie";
 
-export const useSaveTokenStore = create()((set) => ({
-  token: localStorage.getItem('user-token') ?? "",
+export const useSaveTokenStore = create((set) => ({
+  token: typeof window !== "undefined" ? Cookies.get("user-token") ?? "" : "",
   setToken: (token) => {
-    localStorage.setItem('user-token', token);
-    set(() => ({ token }))
+    Cookies.set("user-token", token, { expires: 7, secure: true, sameSite: "Strict" });
+    set(() => ({ token }));
   },
   logOut: () => {
-    localStorage.removeItem('user-token');
-    set(() => ({ token: null }))
+    Cookies.remove("user-token");
+    set(() => ({ token: null }));
   },
 }));
