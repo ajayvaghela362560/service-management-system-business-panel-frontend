@@ -48,7 +48,7 @@ export default function BusinessSignInViewPage() {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [businessLogin] = useMutation(LOGIN, { onCompleted, onError });
-    const form = useForm({ resolver: zodResolver(formSchema) });
+    const form = useForm({ resolver: zodResolver(formSchema), defaultValues: { email: "", password: "" } });
     const SaveToken = useSaveTokenStore((state) => state.setToken);
 
     function onCompleted({ loginUser }) {
@@ -123,6 +123,12 @@ export default function BusinessSignInViewPage() {
                                     </FormItem>
                                 )}
                             />
+
+                            <div className="flex w-full justify-end items-center">
+                                <Link className="text-black font-medium" href={"/business/forgot-password"}>
+                                    {`Forgot password?`}
+                                </Link>
+                            </div>
 
                             <Button
                                 disabled={loading}

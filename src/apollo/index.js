@@ -10,6 +10,7 @@ import {
 import { getMainDefinition } from "@apollo/client/utilities";
 import { WebSocketLink } from "@apollo/client/link/ws";
 import ConfigurableValues from "@/config/constants";
+import Cookies from "js-cookie";
 
 const setupApollo = () => {
   const { SERVER_URL, WS_SERVER_URL } = ConfigurableValues();
@@ -26,7 +27,7 @@ const setupApollo = () => {
   // });
 
   const request = async (operation) => {
-    const data = localStorage.getItem("user-token");
+    const data = Cookies.get("user-token");
 
     let token = null;
     if (data) {

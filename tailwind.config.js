@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+const tailwindConfig = {
   darkMode: ['class'],
   content: [
     './pages/**/*.{js,jsx}',
@@ -11,7 +11,7 @@ module.exports = {
   ],
   theme: {
     container: {
-      center: 'true',
+      center: true,
       padding: '2rem',
       screens: {
         '2xl': '1400px'
@@ -75,28 +75,16 @@ module.exports = {
       },
       keyframes: {
         'accordion-down': {
-          from: {
-            height: '0'
-          },
-          to: {
-            height: 'var(--radix-accordion-content-height)'
-          }
+          from: { height: '0' },
+          to: { height: 'var(--radix-accordion-content-height)' }
         },
         'accordion-up': {
-          from: {
-            height: 'var(--radix-accordion-content-height)'
-          },
-          to: {
-            height: '0'
-          }
+          from: { height: 'var(--radix-accordion-content-height)' },
+          to: { height: '0' }
         },
         rainbow: {
-          '0%': {
-            'background-position': '0%'
-          },
-          '100%': {
-            'background-position': '200%'
-          }
+          '0%': { 'background-position': '0%' },
+          '100%': { 'background-position': '200%' }
         }
       },
       animation: {
@@ -106,6 +94,7 @@ module.exports = {
       }
     }
   },
-  plugins: [require('tailwindcss-animate')]
+  plugins: [import('tailwindcss-animate')]
 };
 
+export default tailwindConfig;

@@ -23,37 +23,20 @@ import { CheckIcon } from 'lucide-react';
 import { Options } from 'nuqs';
 import React from 'react';
 
-interface FilterOption {
-  value: string;
-  label: string;
-  icon?: React.ComponentType<{ className?: string }>;
-}
-
-interface FilterBoxProps {
-  filterKey: string;
-  title: string;
-  options: FilterOption[];
-  setFilterValue: (
-    value: string | ((old: string) => string | null) | null,
-    options?: Options | undefined
-  ) => Promise<URLSearchParams>;
-  filterValue: string;
-}
-
 export function DataTableFilterBox({
   filterKey,
   title,
   options,
   setFilterValue,
   filterValue
-}: FilterBoxProps) {
+}) {
   const selectedValuesSet = React.useMemo(() => {
-    if (!filterValue) return new Set<string>();
+    if (!filterValue) return new Set();
     const values = filterValue.split('.');
     return new Set(values.filter((value) => value !== ''));
   }, [filterValue]);
 
-  const handleSelect = (value: string) => {
+  const handleSelect = (value) => {
     const newSet = new Set(selectedValuesSet);
     if (newSet.has(value)) {
       newSet.delete(value);
