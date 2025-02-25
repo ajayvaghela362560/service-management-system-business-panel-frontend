@@ -4,7 +4,7 @@ import Cookies from "js-cookie";
 export const useSaveTokenStore = create((set) => ({
   token: typeof window !== "undefined" ? Cookies.get("user-token") ?? "" : "",
   setToken: (token) => {
-    Cookies.set("user-token", token, { expires: 7, secure: true, sameSite: "Strict" });
+    Cookies.set("user-token", token);
     set(() => ({ token }));
   },
   logOut: () => {
