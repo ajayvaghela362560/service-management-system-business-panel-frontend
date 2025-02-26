@@ -99,6 +99,14 @@ export const getServiceById = `
   }
 `;
 
+export const resetPassword = `
+  mutation ResetPassword($token: String!, $password: String!){
+    resetPassword(token: $token, password: $password){
+      message
+    }
+  }
+`;
+
 export const getAllServices = `
   query GET_ALL_SERVICES($page: Int, $limit: Int, $search: String) {
     getAllServices(page: $page, limit: $limit, search: $search){
@@ -142,11 +150,6 @@ mutation SendOtpToPhoneNumber($phone: String!, $otp: String!) {
   }
 }
 `;
-export const resetPassword = `mutation ResetPassword($password:String!,$email:String!){
-  resetPassword(password:$password,email:$email){
-    result
-  }
-}`;
 export const createUser = `
   mutation CreateUser($phone:String,$email:String,$password:String,$name:String,$notificationToken:String,$appleId:String){
       createUser(userInput:{
@@ -619,11 +622,13 @@ export const pushToken = `mutation PushToken($token:String){
   }
 }`;
 
-export const forgotPassword = `mutation ForgotPassword($email:String!, $otp:String!){
-  forgotPassword(email:$email,otp:$otp){
-    result
+export const forgotPassword = `
+  mutation ForgotPassword($email:String!){
+    forgotPassword(email:$email) {
+      message
+    }
   }
-}`;
+`;
 
 export const getConfiguration = `query Configuration{
   configuration{

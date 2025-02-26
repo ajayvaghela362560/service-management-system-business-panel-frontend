@@ -5,7 +5,7 @@ import { getAllServices } from '@/apollo/server';
 import { gql, useQuery } from '@apollo/client';
 import { useSearchParams } from 'next/navigation';
 
-const GET_ALL_SERVICES = gql`
+export const GET_ALL_SERVICES = gql`
   ${getAllServices}
 `;
 

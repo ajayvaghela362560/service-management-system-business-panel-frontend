@@ -12,12 +12,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { gql, useMutation } from "@apollo/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { redirect } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
+import { GET_ALL_SERVICES } from "./product-listing";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -26,16 +28,15 @@ const formSchema = z.object({
   price: z.string().trim().min(1, {
     message: "Price is requred.",
   }),
-  duration: z.string().refine(
-    (value) => {
-      const duration = Number(value);
-      return duration >= 15 && duration <= 30;
-    },
-    {
-      message: "Duration must be between 15 and 30 minutes.",
-    }
-  ),
-});
+  hours: z.string().trim(),
+  minutes: z.string().trim(),
+}).refine(
+  (data) => parseInt(data.hours) >= 1 || parseInt(data.minutes) >= 15,
+  {
+    message: "Duration must be at least 15 minutes",
+    path: ["minutes"],
+  }
+);
 
 const ADD_SERVICE = gql`
   ${AddService}
@@ -51,7 +52,8 @@ export default function ProductForm({ initialData, pageTitle }) {
   const defaultValues = {
     name: initialData?.name || "",
     price: initialData?.price || "",
-    duration: initialData?.duration || "",
+    hours: initialData?.duration?.split(":")?.[0] || "00",
+    minutes: initialData?.duration?.split(":")?.[1] || "00",
   };
 
   const form = useForm({
@@ -59,7 +61,17 @@ export default function ProductForm({ initialData, pageTitle }) {
     values: defaultValues,
   });
 
-  const [SERVICES] = useMutation(serviceId ? Edit_SERVICE : ADD_SERVICE, { onCompleted, onError });
+  const [SERVICES] = useMutation(serviceId ? Edit_SERVICE : ADD_SERVICE, {
+    onCompleted,
+    onError,
+    refetchQueries: [
+      {
+        query: GET_ALL_SERVICES,
+        variables: { page: 1, limit: 10, search: "" },
+        awaitRefetchQueries: true,
+      },
+    ],
+  });
 
   function onCompleted(data) {
     // console.log("###_data_### ", data.EditService);
@@ -78,12 +90,20 @@ export default function ProductForm({ initialData, pageTitle }) {
   }
 
   function onSubmit(values) {
-    let variables = values;
+    const { hours, minutes, ...rest } = values;
+    const duration = `${hours?.padStart(2, "0")}:${minutes}`;
+
+    let variables = { ...rest, duration };
+
     if (serviceId) {
       variables = { ...variables, id: serviceId };
     }
+
     SERVICES({ variables });
   }
+
+  const hours = Array.from({ length: 12 }, (_, i) => (i.toString().padStart(2, "0")).toString());
+  const minutes = ["00", "15", "30", "45"];
 
   return (
     <Card className="mx-auto w-full">
@@ -128,23 +148,58 @@ export default function ProductForm({ initialData, pageTitle }) {
                 )}
               />
             </div>
-            <FormField
-              control={form.control}
-              name="duration"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Duration</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="Enter service duration"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+
+            <div className="mb-2 space-y-2 lg:mb-0">
+              <label className="text-sm font-medium leading-none">Duration</label>
+              <div className="flex items-center gap-2">
+                {/* Hour Picker */}
+                <FormField
+                  control={form.control}
+                  name="hours"
+                  render={({ field }) => (
+                    <FormItem>
+                      <Select onValueChange={(value) => field.onChange(value)} value={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder={`${field.value} Hour`} />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {hours.map((hour) => (
+                            <SelectItem key={hour} value={hour}>{`${hour} Hour`}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage>{form.formState.errors.minutes?.message}</FormMessage>
+                    </FormItem>
+                  )}
+                />
+
+                {/* Minute Picker */}
+                <FormField
+                  control={form.control}
+                  name="minutes"
+                  render={({ field }) => (
+                    <FormItem>
+                      <Select onValueChange={(value) => field.onChange(value)} value={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder={`${field.value} Minute`} />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {minutes.map((minute) => (
+                            <SelectItem key={minute} value={minute}>{`${minute} Minute`}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage className="opacity-0">{form.formState.errors.minutes?.message}</FormMessage>
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+
             <Button type="submit">{serviceId ? "Edit" : "Add"} Service</Button>
           </form>
         </Form>
