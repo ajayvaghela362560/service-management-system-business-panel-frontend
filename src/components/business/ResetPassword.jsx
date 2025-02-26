@@ -15,27 +15,46 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { gql, useMutation } from "@apollo/client";
-import { forgotPassword } from "@/apollo/server";
+import { resetPassword } from "@/apollo/server";
 import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
-    email: z.string().trim().email({ message: "Enter a valid email address" }),
-});
+    newPassword: z
+        .string()
+        .trim()
+        .min(8, { message: "Password must be at least 8 characters long" })
+        .max(100, { message: "Password must be less than 100 characters" })
+        .regex(/[A-Z]/, {
+            message: "Password must contain at least one uppercase letter",
+        })
+        .regex(/[a-z]/, {
+            message: "Password must contain at least one lowercase letter",
+        })
+        .regex(/[0-9]/, { message: "Password must contain at least one number" })
+        .regex(/[^A-Za-z0-9]/, {
+            message: "Password must contain at least one special character",
+        }),
+    confirmNewPassword: z.string().trim(),
+})
+    .refine((data) => data.newPassword === data.confirmNewPassword, {
+        message: "Passwords must match",
+        path: ["confirmNewPassword"],
+    });
 
-const FORGOT_PASSWORD = gql`
-  ${forgotPassword}
+const RESET_PASSWORD = gql`
+  ${resetPassword}
 `;
 
-const ForgotPasswordViewPageComponent = () => {
+const ResetPasswordViewPageComponent = ({ token }) => {
 
     const router = useRouter();
     const [loading, setLoading] = useState(false);
-    const [businessForgotPassword] = useMutation(FORGOT_PASSWORD, { onCompleted, onError });
-    const form = useForm({ resolver: zodResolver(formSchema), defaultValues: { email: "" } });
+    const [businessResetPassword] = useMutation(RESET_PASSWORD, { onCompleted, onError });
+    const form = useForm({ resolver: zodResolver(formSchema), defaultValues: { newPassword: "", confirmNewPassword: "" } });
 
     function onCompleted(result) {
         setLoading(false);
-        toast.success(result?.forgotPassword?.message);
+        toast.success(result?.resetPassword?.message);
         router.push("/business/sign-in");
     }
 
@@ -46,7 +65,7 @@ const ForgotPasswordViewPageComponent = () => {
 
     const onSubmit = async (data) => {
         setLoading(true);
-        businessForgotPassword({ variables: { ...data } });
+        businessResetPassword({ variables: { token, password: data?.newPassword } });
     };
 
     return (<>
@@ -55,10 +74,10 @@ const ForgotPasswordViewPageComponent = () => {
                 <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
                     <div className="flex flex-col space-y-2 text-center">
                         <h1 className="text-2xl font-semibold tracking-tight">
-                            Forgot your password
+                            Create new password
                         </h1>
                         <p className="text-sm text-muted-foreground">
-                            We will send you an email to forgot your password
+                            Please set a new password
                         </p>
                     </div>
                     <Form {...form}>
@@ -68,17 +87,25 @@ const ForgotPasswordViewPageComponent = () => {
                         >
                             <FormField
                                 control={form.control}
-                                name="email"
+                                name="newPassword"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Email</FormLabel>
+                                        <FormLabel>New Password</FormLabel>
                                         <FormControl>
-                                            <Input
-                                                type="email"
-                                                placeholder="Enter your email..."
-                                                disabled={loading}
-                                                {...field}
-                                            />
+                                            <Input type="password" placeholder="Enter new password..." disabled={loading} {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="confirmNewPassword"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Confirm New Password</FormLabel>
+                                        <FormControl>
+                                            <Input type="password" placeholder="Confirm new password..." disabled={loading} {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -101,4 +128,4 @@ const ForgotPasswordViewPageComponent = () => {
     </>);
 }
 
-export default ForgotPasswordViewPageComponent;
+export default ResetPasswordViewPageComponent;
