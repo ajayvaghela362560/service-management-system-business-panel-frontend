@@ -47,19 +47,22 @@ export const AddService = `
     $id: String,
     $name: String!,
     $price: String!,
-    $duration: String!    
+    $duration: String!,
+    $description: String!
   ) {
     AddService(input: { 
       id: $id,
       name: $name,
       price: $price,
-      duration: $duration
+      duration: $duration,
+      description: $description
     }) {
       message
       result {        
         name
         price
-        duration 
+        duration
+        description
       }
     }
   }
@@ -70,20 +73,31 @@ export const EditService = `
     $id: String,
     $name: String!,
     $price: String!,
-    $duration: String!    
+    $duration: String!,
+    $description: String! 
   ) {
     EditService(input: { 
       id: $id,
       name: $name,
       price: $price,
-      duration: $duration
+      duration: $duration,
+      description: $description
     }) {
       message
       result {        
         name
         price
-        duration 
+        duration
+        description
       }
+    }
+  }
+`;
+
+export const deleteService = `
+  mutation DeleteService($id: String!) {
+    deleteService(id: $id) {
+      message      
     }
   }
 `;
@@ -95,6 +109,7 @@ export const getServiceById = `
       name
       price
       duration
+      description
     }
   }
 `;
@@ -120,6 +135,48 @@ export const getAllServices = `
     }
   }
 `;
+
+export const fetchServicesWithoutPagination = `
+  query FetchServicesWithoutPagination {
+    fetchServicesWithoutPagination {
+      total_services
+      services {
+        id
+        name
+        price
+        duration
+        description
+      }
+    }
+  }
+`;
+
+export const addEmployee = `
+  mutation AddEmployee(
+    $id: String
+    $email: String!
+    $firstName: String!
+    $lastName: String!
+    $profileUrl: String!
+    $services: [String!]
+    $weeklyAvailability: [String!]
+  ) {
+    addEmployee(
+      input: {
+        id: $id
+        email: $email
+        firstName: $firstName
+        lastName: $lastName
+        profileUrl: $profileUrl
+        services: $services
+        weeklyAvailability: $weeklyAvailability
+      }
+    ) {
+      message
+    }
+  }
+`;
+
 
 
 export const emailExist = `

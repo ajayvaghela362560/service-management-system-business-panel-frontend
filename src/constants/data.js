@@ -15,12 +15,18 @@ export const navItems = [
     isActive: false,
     items: [] // No child items
   },
+   {
+    title: 'Employee',
+    url: '/business/dashboard/employee',
+    icon: 'user2',
+    isActive: false,
+    items: [] // No child items
+  },
   // {
   //   title: 'Account',
   //   url: '#', // Placeholder as there is no direct link for the parent
   //   icon: 'billing',
   //   isActive: true,
-
   //   items: [
   //     {
   //       title: 'Profile',

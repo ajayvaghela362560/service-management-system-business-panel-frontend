@@ -20,9 +20,10 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
 import { GET_ALL_SERVICES } from "./product-listing";
+import { Textarea } from "@/components/ui/textarea";
 
 const formSchema = z.object({
-  name: z.string().min(2, {
+  name: z.string().trim().min(2, {
     message: "Service name must be at least 2 characters.",
   }),
   price: z.string().trim().min(1, {
@@ -30,6 +31,9 @@ const formSchema = z.object({
   }),
   hours: z.string().trim(),
   minutes: z.string().trim(),
+  description: z.string().trim().min(1, {
+    message: "Service description is required.",
+  }),
 }).refine(
   (data) => parseInt(data.hours) >= 1 || parseInt(data.minutes) >= 15,
   {
@@ -54,6 +58,7 @@ export default function ProductForm({ initialData, pageTitle }) {
     price: initialData?.price || "",
     hours: initialData?.duration?.split(":")?.[0] || "00",
     minutes: initialData?.duration?.split(":")?.[1] || "00",
+    description: initialData?.description || "",
   };
 
   const form = useForm({
@@ -198,6 +203,22 @@ export default function ProductForm({ initialData, pageTitle }) {
                   )}
                 />
               </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Service Description</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Enter service description..." {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
 
             <Button type="submit">{serviceId ? "Edit" : "Add"} Service</Button>

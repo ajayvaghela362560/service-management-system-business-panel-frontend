@@ -21,8 +21,8 @@ export const AlertModal = ({
 
   return (
     <Modal
-      title='Are you sure?'
-      description='This action cannot be undone.'
+      title='Delete Confirmation'
+      description='Are you sure you want to delete this service?'
       isOpen={isOpen}
       onClose={onClose}
     >
